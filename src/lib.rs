@@ -1,4 +1,7 @@
 use rusqlite::{Connection, Result, params};
+use std::fs;
+use std::io;
+use std::path::Path;
 
 pub struct Todo {
     pub entry: String,
@@ -67,6 +70,19 @@ impl Todo {
             )?;
         }
         Ok(())
+    }
+    pub fn purge() -> io::Result<()> {
+        let database = Path::new("todo_list_database.db");
+
+        if database.exists() {
+            fs::remove_file(database)?;
+            Ok(())
+        } else {
+            Err(io::Error::new(
+                io::ErrorKind::NotFound,
+                "File does not exist (todo_list_database.db)",
+            ))
+        }
     }
 }
 

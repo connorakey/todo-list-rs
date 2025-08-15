@@ -1,5 +1,5 @@
-use todo_list::Todo;
 use std::env;
+use todo_list::Todo;
 
 fn print_help() {
     println!("Usage:");
@@ -31,7 +31,6 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
-        // No arguments, just list todos
         list_todos();
         return;
     }
@@ -49,7 +48,6 @@ fn main() {
             } else {
                 for arg in &args[2..] {
                     Todo::new(arg.to_string(), false).save().unwrap();
-                    println!("Added: {}", arg);
                 }
             }
         }
@@ -59,21 +57,32 @@ fn main() {
                 println!("Usage: todo remove <id>");
             } else if let Ok(id) = args[2].parse::<i32>() {
                 Todo::remove(id).unwrap();
-                println!("Removed todo #{}", id);
             } else {
                 println!("Invalid id: {}", args[2]);
             }
         }
 
         "complete" => {
-            if args.len() != 3 {
-                println!("Usage: todo complete <id>");
-            } else if let Ok(id) = args[2].parse::<i32>() {
-                Todo::complete(id).unwrap();
-                println!("Marked todo #{} as complete", id);
+            if args.len() < 3 {
+                println!("Usage: todo complete <id1> [id2] ...");
             } else {
-                println!("Invalid id: {}", args[2]);
+                for arg in &args[2..] {
+                    match arg.parse::<i32>() {
+                        Ok(id) => {
+                            if let Err(e) = Todo::complete(id) {
+                                println!("Failed to complete todo #{}: {}", id, e);
+                            } else {
+                                println!("Marked todo #{} as complete", id);
+                            }
+                        }
+                        Err(_) => println!("Invalid id: {}", arg),
+                    }
+                }
             }
+        }
+
+        "purge" => if let Err(e) = Todo::purge() {
+            println!("Failed to delete database: {}", e);
         }
 
         _ => {

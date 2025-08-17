@@ -9,7 +9,7 @@ license=('GPL')
 depends=('rust')
 makedepends=('cargo')
 source=("https://github.com/connorakey/todo-list-rs/archive/refs/tags/v${pkgver}.zip")
-sha256sums=('8d2a8b34cb2bed43f011cdf76bbbbb1957b9ae61ae8702db359e2ae80dc30d0a')
+sha256sums=('bcfae76b12fc82da63917d0a8165652a91275c20f56bcc04b0fa531115ea5ff0')
 
 build() {
     cd "${srcdir}/todo-list-rs-${pkgver}"
